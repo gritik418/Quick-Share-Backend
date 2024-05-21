@@ -23,7 +23,7 @@ export class ErrorReporter implements ErrorReporterContract {
     /**
      * Collecting errors as per the JSONAPI spec
      */
-    this.errors[field.wildCardPath] = message;
+    this.errors[field.name] = message;
   }
 
   /**

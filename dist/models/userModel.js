@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 const UserSchema = new mongoose.Schema({
     first_name: {
@@ -24,6 +25,10 @@ const UserSchema = new mongoose.Schema({
         minLength: 8,
     },
 }, { timestamps: true });
+UserSchema.methods.generateAuthToken = function (payload) {
+    const token = jwt.sign(payload, process.env.JWT_SECRET);
+    return token;
+};
 const User = mongoose.models.User || mongoose.model("User", UserSchema);
 export default User;
 //# sourceMappingURL=userModel.js.map

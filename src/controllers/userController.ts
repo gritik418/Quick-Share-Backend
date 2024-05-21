@@ -9,6 +9,9 @@ import Verification from "../models/verificationModel.js";
 import generateOTP from "../utils/generateOTP.js";
 import sendEmail, { MailOptionsType } from "../utils/sendEmail.js";
 import verificationTemplate from "../utils/verificationTemplate.js";
+import { ErrorReporter } from "../validators/ErrorReporter.js";
+
+vine.errorReporter = () => new ErrorReporter();
 
 export const userLogin = async (req: Request, res: Response) => {
   try {
@@ -52,7 +55,7 @@ export const userLogin = async (req: Request, res: Response) => {
       return res.status(400).json({
         success: false,
         status: 400,
-        error: error.messages,
+        errors: error.messages,
       });
     }
     return res.status(500).json({
@@ -72,12 +75,16 @@ export const userSignup = async (req: Request, res: Response) => {
     });
 
     const checkExisting = await User.findOne({ email: output.email });
-    if (checkExisting && checkExisting.email_verified) {
-      return res.status(401).json({
-        success: false,
-        status: 400,
-        message: "Account already exists.",
-      });
+    if (checkExisting) {
+      if (checkExisting.email_verified) {
+        return res.status(401).json({
+          success: false,
+          status: 400,
+          message: "Account already exists.",
+        });
+      } else {
+        await User.findOneAndDelete({ email: output.email });
+      }
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -119,15 +126,20 @@ export const userSignup = async (req: Request, res: Response) => {
         return res.status(201).json({
           success: true,
           status: 200,
-          message: err,
+          message: "Something went wrong.",
         });
       });
+    return res.status(201).json({
+      success: true,
+      status: 200,
+      message: "Something went wrong.",
+    });
   } catch (error) {
     if (error instanceof errors.E_VALIDATION_ERROR) {
       return res.status(400).json({
         success: false,
         status: 400,
-        error: error.messages,
+        errors: error.messages,
       });
     }
     return res.status(500).json({
