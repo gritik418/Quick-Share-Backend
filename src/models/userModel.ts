@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
 
+export type TokenType = {
+  id: string;
+};
+
 const UserSchema = new mongoose.Schema(
   {
     first_name: {
@@ -16,6 +20,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+    },
+    email_verified: {
+      type: Boolean,
+      default: false,
     },
     password: {
       type: String,

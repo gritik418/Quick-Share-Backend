@@ -19,6 +19,14 @@ const FileSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    fileType: {
+      type: String,
+    },
+    filePath: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     isExpired: {
       type: Boolean,
       default: false,
