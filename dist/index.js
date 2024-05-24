@@ -2,9 +2,13 @@ import express from "express";
 import connectToDB from "./database/mongoose.config.js";
 import fileRouter from "./routes/fileRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 8000;
 connectToDB();
+app.use(cors({
+    origin: "http://localhost:3000",
+}));
 app.use(express.json());
 app.use("/api/file", fileRouter);
 app.use("/api/user", userRouter);
