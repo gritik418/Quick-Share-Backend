@@ -2,6 +2,7 @@ import express from "express";
 import connectToDB from "./database/mongoose.config.js";
 import fileRouter from "./routes/fileRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(
     origin: "http://localhost:3000",
   })
 );
+app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/file", fileRouter);

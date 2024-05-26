@@ -51,11 +51,12 @@ export const userLogin = async (req: Request, res: Response) => {
       email: user.email,
     });
 
+    res.cookie("uid", token);
+
     return res.status(200).json({
       success: true,
       status: 200,
       message: "Logged In Successfully.",
-      token,
     });
   } catch (error) {
     if (error instanceof errors.E_VALIDATION_ERROR) {
@@ -121,25 +122,12 @@ export const userSignup = async (req: Request, res: Response) => {
       text: `Verify your Email Address. To verify your account use the otp : ${secretKey}`,
     };
 
-    sendEmail(mailOptions)
-      .then(() => {
-        return res.status(201).json({
-          success: true,
-          status: 200,
-          message: "Mail Sent.",
-        });
-      })
-      .catch((err) => {
-        return res.status(201).json({
-          success: true,
-          status: 200,
-          message: "Something went wrong.",
-        });
-      });
+    await sendEmail(mailOptions);
+
     return res.status(201).json({
       success: true,
       status: 200,
-      message: "Something went wrong.",
+      message: "Mail sent.",
     });
   } catch (error) {
     if (error instanceof errors.E_VALIDATION_ERROR) {
@@ -207,11 +195,13 @@ export const verifyEmail = async (req: Request, res: Response) => {
       id: user._id,
       email: user.email,
     });
+
+    res.cookie("uid", token);
+
     return res.status(200).json({
       success: true,
       status: 200,
       message: "Account created Successfully.",
-      token,
     });
   } catch (error) {
     if (error instanceof errors.E_VALIDATION_ERROR) {
