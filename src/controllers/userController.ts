@@ -20,6 +20,36 @@ import EmailVerificationSchema, {
 
 vine.errorReporter = () => new ErrorReporter();
 
+export const getUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId).select({
+      first_name: 1,
+      last_name: 1,
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        status: 400,
+        message: "Please Login.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      status: 200,
+      user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      status: 400,
+      message: "Server Error.",
+    });
+  }
+};
+
 export const userLogin = async (req: Request, res: Response) => {
   try {
     const data: UserLoginDataType = req.body;
