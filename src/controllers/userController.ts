@@ -1,4 +1,4 @@
-import { Request, Response, json } from "express";
+import { Request, Response } from "express";
 import LoginSchema, { LoginSchemaType } from "../validators/loginSchema.js";
 import vine, { errors } from "@vinejs/vine";
 import User from "../models/userModel.js";
@@ -51,11 +51,13 @@ export const userLogin = async (req: Request, res: Response) => {
       email: user.email,
     });
 
-    res.cookie("uid", token);
+    res.cookie("token", token, {
+      path: "/",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
     return res.status(200).json({
       success: true,
-      status: 200,
       message: "Logged In Successfully.",
     });
   } catch (error) {
@@ -196,9 +198,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
       email: user.email,
     });
 
-    res.cookie("uid", token);
-
-    return res.status(200).json({
+    return res.cookie("token", token).status(200).json({
       success: true,
       status: 200,
       message: "Account created Successfully.",

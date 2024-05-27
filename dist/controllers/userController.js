@@ -37,10 +37,12 @@ export const userLogin = async (req, res) => {
             id: user._id,
             email: user.email,
         });
-        res.cookie("uid", token);
+        res.cookie("token", token, {
+            path: "/",
+            maxAge: 24 * 60 * 60 * 1000,
+        });
         return res.status(200).json({
             success: true,
-            status: 200,
             message: "Logged In Successfully.",
         });
     }
@@ -165,8 +167,7 @@ export const verifyEmail = async (req, res) => {
             id: user._id,
             email: user.email,
         });
-        res.cookie("uid", token);
-        return res.status(200).json({
+        return res.cookie("token", token).status(200).json({
             success: true,
             status: 200,
             message: "Account created Successfully.",
