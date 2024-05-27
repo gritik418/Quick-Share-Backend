@@ -34,8 +34,9 @@ export const uploadFile = function (req, res) {
 };
 export const findFile = async (req, res) => {
     try {
-        const userId = req.params.senderID;
-        const secretKey = req.params.secretKey;
+        const link = req.body.link.split("/");
+        const userId = link[1];
+        const secretKey = link[2];
         const file = await File.findOne({
             $and: [{ userId }, { secretKey }],
         });

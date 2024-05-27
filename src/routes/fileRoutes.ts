@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post("/upload", authenticate, uploadFile);
 
-router.get("/find/:senderID/:secretKey", authenticate, findFile);
+router.get("/find", authenticate, findFile);
 
 export default router;
