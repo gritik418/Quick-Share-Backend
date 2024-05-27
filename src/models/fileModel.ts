@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const FileSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     fileName: {
       type: String,
       required: true,
@@ -26,10 +31,6 @@ const FileSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-    },
-    isExpired: {
-      type: Boolean,
-      default: false,
     },
     accessCount: {
       type: Number,

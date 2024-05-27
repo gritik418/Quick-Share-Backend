@@ -4,8 +4,7 @@ import { TokenType } from "../models/userModel.js";
 
 const authenticate = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const bearerToken = req.headers.authorization;
-    const authToken = bearerToken?.split(" ")[1];
+    const authToken = req.cookies.token;
 
     if (!authToken) {
       throw new Error("Authentication failed.");
@@ -23,7 +22,7 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
     req.params.id = verify.id;
     next();
   } catch (error) {
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
       status: 400,
       message: "Please Login.",

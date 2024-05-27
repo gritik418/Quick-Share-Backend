@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
 const authenticate = (req, res, next) => {
     try {
-        const bearerToken = req.headers.authorization;
-        const authToken = bearerToken?.split(" ")[1];
+        const authToken = req.cookies.token;
         if (!authToken) {
             throw new Error("Authentication failed.");
         }
@@ -14,7 +13,7 @@ const authenticate = (req, res, next) => {
         next();
     }
     catch (error) {
-        res.status(401).json({
+        return res.status(401).json({
             success: false,
             status: 400,
             message: "Please Login.",
