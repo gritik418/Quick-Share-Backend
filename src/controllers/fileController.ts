@@ -5,6 +5,7 @@ import File from "../models/fileModel.js";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 
 export const uploadFile = function (req: Request, res: Response) {
   upload(req, res, async function (err) {
@@ -76,11 +77,7 @@ export const findFile = async (req: Request, res: Response) => {
       });
     }
 
-    await File.findByIdAndUpdate(file._id, {
-      $inc: { accessCount: 1 },
-    });
-
-    const downloadLink = `${process.env.DOMAIN}/api/download/${secretKey}/${file.originalName}`;
+    const downloadLink = `${process.env.DOMAIN}/api/file/download/${secretKey}/${file.originalName}`;
 
     return res.status(200).json({
       success: true,
@@ -92,6 +89,54 @@ export const findFile = async (req: Request, res: Response) => {
         fileType: file.fileType,
       },
     });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      status: 400,
+      message: "Server Error.",
+    });
+  }
+};
+
+export const downloadFile = async (req: Request, res: Response) => {
+  try {
+    const secretKey = req.params.secretKey;
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
+    const file = await File.findOne({ secretKey });
+
+    if (!file) {
+      return res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid Link.",
+      });
+    }
+    if (file.accessCount >= 10) {
+      return res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Download Link Expired.",
+      });
+    }
+
+    await File.findByIdAndUpdate(file._id, {
+      $inc: { accessCount: 1 },
+    });
+
+    const downloadPath = path.join(
+      `${__dirname}`,
+      "../../public/uploads/",
+      file.userId.toString(),
+      file.fileName
+    );
+    res.setHeader(
+      "Content-disposition",
+      `attachment; filename=${file.originalName}`
+    );
+    res.setHeader("Content-Type", file.fileType);
+    return res.download(downloadPath, file.originalName, file.originalName);
   } catch (error) {
     return res.status(500).json({
       success: false,
