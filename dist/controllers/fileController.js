@@ -106,7 +106,6 @@ export const downloadFile = async (req, res) => {
         return res.download(downloadPath, file.originalName);
     }
     catch (error) {
-        console.log(error);
         return res.status(500).json({
             success: false,
             status: 400,
