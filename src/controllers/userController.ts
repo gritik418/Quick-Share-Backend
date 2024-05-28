@@ -84,6 +84,7 @@ export const userLogin = async (req: Request, res: Response) => {
     res.cookie("token", token, {
       path: "/",
       maxAge: 24 * 60 * 60 * 1000,
+      secure: true,
     });
 
     return res.status(200).json({
@@ -232,6 +233,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
     res.cookie("token", token, {
       path: "/",
       maxAge: 24 * 60 * 60 * 1000,
+      secure: true,
     });
 
     return res.status(200).json({
