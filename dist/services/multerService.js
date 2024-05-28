@@ -1,8 +1,12 @@
 import multer from "multer";
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const directory = `./public/uploads/${req.params?.id}/`;
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+        const directory = path.join(__dirname, `../public/uploads/${req.params?.id}/`);
         if (!fs.existsSync(directory)) {
             fs.mkdirSync(directory, { recursive: true });
         }

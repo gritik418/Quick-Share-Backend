@@ -36,6 +36,10 @@ const FileSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    isExpired: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

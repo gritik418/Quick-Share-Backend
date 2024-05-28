@@ -2,7 +2,6 @@ import upload from "../services/multerService.js";
 import multer from "multer";
 import File from "../models/fileModel.js";
 import { v4 as uuidv4 } from "uuid";
-import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 export const uploadFile = function (req, res) {
@@ -49,12 +48,8 @@ export const findFile = async (req, res) => {
             });
         }
         if (file.accessCount >= 10) {
-            await File.findByIdAndDelete(file._id);
-            const filePath = path.resolve(__dirname, `./public/uploads/${userId}/${file.fileName}`);
-            fs.rm(filePath, { recursive: true }, (err) => {
-                if (err) {
-                    return;
-                }
+            await File.findByIdAndUpdate(file._id, {
+                $set: { isExpired: true },
             });
             return res.status(400).json({
                 success: false,
@@ -105,12 +100,13 @@ export const downloadFile = async (req, res) => {
         await File.findByIdAndUpdate(file._id, {
             $inc: { accessCount: 1 },
         });
-        const downloadPath = path.join(`${__dirname}`, "../../public/uploads/", file.userId.toString(), file.fileName);
+        const downloadPath = path.join(__dirname, "../public/uploads/", file.userId.toString(), file.fileName);
         res.setHeader("Content-disposition", `attachment; filename=${file.originalName}`);
         res.setHeader("Content-Type", file.fileType);
-        return res.download(downloadPath, file.originalName, file.originalName);
+        return res.download(downloadPath, file.originalName);
     }
     catch (error) {
+        console.log(error);
         return res.status(500).json({
             success: false,
             status: 400,
