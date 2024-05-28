@@ -136,6 +136,7 @@ export const userSignup = async (req, res) => {
             success: true,
             status: 200,
             message: "Mail sent.",
+            email: output.email,
         });
     }
     catch (error) {
@@ -195,7 +196,11 @@ export const verifyEmail = async (req, res) => {
             id: user._id,
             email: user.email,
         });
-        return res.cookie("token", token).status(200).json({
+        res.cookie("token", token, {
+            path: "/",
+            maxAge: 24 * 60 * 60 * 1000,
+        });
+        return res.status(200).json({
             success: true,
             status: 200,
             message: "Account created Successfully.",

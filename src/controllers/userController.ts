@@ -160,6 +160,7 @@ export const userSignup = async (req: Request, res: Response) => {
       success: true,
       status: 200,
       message: "Mail sent.",
+      email: output.email,
     });
   } catch (error) {
     if (error instanceof errors.E_VALIDATION_ERROR) {
@@ -228,7 +229,12 @@ export const verifyEmail = async (req: Request, res: Response) => {
       email: user.email,
     });
 
-    return res.cookie("token", token).status(200).json({
+    res.cookie("token", token, {
+      path: "/",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({
       success: true,
       status: 200,
       message: "Account created Successfully.",
