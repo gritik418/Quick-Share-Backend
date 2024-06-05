@@ -85,7 +85,8 @@ export const userLogin = async (req: Request, res: Response) => {
       path: "/",
       maxAge: 24 * 60 * 60 * 1000,
       secure: true,
-      domain: process.env.CLIENT_DOMAIN,
+      sameSite: false,
+      httpOnly: true,
     });
 
     return res.status(200).json({
@@ -235,7 +236,8 @@ export const verifyEmail = async (req: Request, res: Response) => {
       path: "/",
       maxAge: 24 * 60 * 60 * 1000,
       secure: true,
-      domain: process.env.CLIENT_DOMAIN,
+      sameSite: false,
+      httpOnly: true,
     });
 
     return res.status(200).json({
