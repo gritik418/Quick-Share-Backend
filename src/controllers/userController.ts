@@ -85,7 +85,7 @@ export const userLogin = async (req: Request, res: Response) => {
       path: "/",
       maxAge: 24 * 60 * 60 * 1000,
       secure: true,
-      sameSite: false,
+      sameSite: "none",
       httpOnly: true,
     });
 
@@ -236,7 +236,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
       path: "/",
       maxAge: 24 * 60 * 60 * 1000,
       secure: true,
-      sameSite: false,
+      sameSite: "none",
       httpOnly: true,
     });
 
